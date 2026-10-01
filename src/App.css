@@ -167,6 +167,45 @@ h3,
   border-color: color-mix(in srgb, var(--danger) 40%, transparent);
 }
 
+.session-timeout-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: var(--bg, #111);
+}
+
+.session-timeout-card {
+  max-width: 24rem;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-solid);
+  color: var(--fg);
+}
+
+.session-timeout-card h2 {
+  margin: 0 0 0.5rem;
+}
+
+.session-timeout-card p {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+}
+
+.session-timeout-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .search-bar {
   display: flex;
   align-items: center;

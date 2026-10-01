@@ -10,6 +10,7 @@ import { Sidebar } from './components/Sidebar'
 import { MapView } from './components/MapView'
 import { BathroomList } from './components/BathroomList'
 import { AuthModal } from './components/AuthModal'
+import { SessionTimeoutOverlay } from './components/SessionTimeoutOverlay'
 import type { FilterState, RatingForm } from './types'
 import './App.css'
 
@@ -47,11 +48,16 @@ function matchesQuery(
   )
 }
 
-function AppShell() {
+function SessionGate() {
+  const { remainingMs, expired } = usePageTimeout()
+  if (expired) return <SessionTimeoutOverlay />
+  return <AppShell remainingMs={remainingMs} />
+}
+
+function AppShell({ remainingMs }: { remainingMs: number }) {
   const { user } = useAuth()
   const { bathrooms, submitRating, deleteRating, error: loadError } = useBathrooms()
   const { userLocation, error: gpsError, locating, requestLocation } = useUserLocation()
-  const { remainingMs } = usePageTimeout()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [authOpen, setAuthOpen] = useState(false)
   const [form, setForm] = useState<RatingForm>(defaultForm)
@@ -171,7 +177,7 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppShell />
+        <SessionGate />
       </AuthProvider>
     </ThemeProvider>
   )
