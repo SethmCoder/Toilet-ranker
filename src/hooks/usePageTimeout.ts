@@ -2,13 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 
 const SESSION_DISPLAY_MS = 30 * 60 * 1000
 
-/** Session countdown; once it hits zero the page stays expired until reloaded. */
-export function usePageTimeout(timeoutMs = SESSION_DISPLAY_MS) {
+/**
+ * Session countdown; once it hits zero the page stays expired until reloaded.
+ * While `active` is false the countdown is paused and restarts from full when re-activated.
+ */
+export function usePageTimeout(active = true, timeoutMs = SESSION_DISPLAY_MS) {
   const startedAt = useRef(Date.now())
   const [remainingMs, setRemainingMs] = useState(timeoutMs)
-  const expired = remainingMs <= 0
+  const expired = active && remainingMs <= 0
 
   useEffect(() => {
+    if (!active) {
+      startedAt.current = Date.now()
+      setRemainingMs(timeoutMs)
+      return
+    }
     if (expired) return
 
     const tick = () => {
@@ -19,7 +27,7 @@ export function usePageTimeout(timeoutMs = SESSION_DISPLAY_MS) {
     tick()
     const id = window.setInterval(tick, 1000)
     return () => window.clearInterval(id)
-  }, [timeoutMs, expired])
+  }, [active, timeoutMs, expired])
 
   return { remainingMs, timeoutMs, expired }
 }

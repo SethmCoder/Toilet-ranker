@@ -49,12 +49,14 @@ function matchesQuery(
 }
 
 function SessionGate() {
-  const { remainingMs, expired } = usePageTimeout()
+  const { user, loading } = useAuth()
+  const isGuest = !loading && !user
+  const { remainingMs, expired } = usePageTimeout(isGuest)
   if (expired) return <SessionTimeoutOverlay />
-  return <AppShell remainingMs={remainingMs} />
+  return <AppShell remainingMs={isGuest ? remainingMs : null} />
 }
 
-function AppShell({ remainingMs }: { remainingMs: number }) {
+function AppShell({ remainingMs }: { remainingMs: number | null }) {
   const { user } = useAuth()
   const { bathrooms, submitRating, deleteRating, error: loadError } = useBathrooms()
   const { userLocation, error: gpsError, locating, requestLocation } = useUserLocation()

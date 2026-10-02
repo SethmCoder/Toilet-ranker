@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
+import { CustomizePanel } from './CustomizePanel'
 import { SearchBar } from './SearchBar'
 import { SessionTimerBadge } from './SessionTimeoutOverlay'
 import type { Bathroom } from '../types'
@@ -15,7 +17,7 @@ type TopBarProps = {
   onLocateMe: () => void
   locating: boolean
   hasLocation: boolean
-  sessionRemainingMs: number
+  sessionRemainingMs: number | null
   supabaseConnected: boolean
 }
 
@@ -35,6 +37,7 @@ export function TopBar({
 }: TopBarProps) {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const [customizeOpen, setCustomizeOpen] = useState(false)
 
   return (
     <header className="top-bar bubble-bar">
@@ -67,7 +70,7 @@ export function TopBar({
       </div>
 
       <div className="top-bar-right">
-        <SessionTimerBadge remainingMs={sessionRemainingMs} />
+        {sessionRemainingMs !== null && <SessionTimerBadge remainingMs={sessionRemainingMs} />}
 
         <button
           type="button"
@@ -93,6 +96,18 @@ export function TopBar({
         >
           {theme === 'light' ? '☾' : '☀'}
         </button>
+
+        <div className="customize-anchor">
+          <button
+            type="button"
+            className={`secondary-btn customize-btn ${customizeOpen ? 'active' : ''}`}
+            onClick={() => setCustomizeOpen((v) => !v)}
+            aria-expanded={customizeOpen}
+          >
+            Customize
+          </button>
+          {customizeOpen && <CustomizePanel onClose={() => setCustomizeOpen(false)} />}
+        </div>
 
         {user ? (
           <button type="button" className="secondary-btn" onClick={() => void signOut()}>

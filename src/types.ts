@@ -24,6 +24,14 @@ export type RatingForm = {
 
 export type ThemeMode = 'light' | 'dark'
 
+export type Customization = {
+  hue: number
+  brightness: number
+  buttonOmbre: boolean
+  appOmbre: boolean
+  lightingOmbre: boolean
+}
+
 export type FilterState = {
   minRating: number
   maxRating: number
