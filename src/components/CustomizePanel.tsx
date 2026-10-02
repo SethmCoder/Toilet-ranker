@@ -10,8 +10,8 @@ type OmbreKey = 'buttonOmbre' | 'appOmbre' | 'lightingOmbre'
 
 const OMBRE_TOGGLES: { key: OmbreKey; label: string; hint: string }[] = [
   { key: 'buttonOmbre', label: 'Button ombre', hint: 'Submit rating, log in, score badges' },
-  { key: 'appOmbre', label: 'App ombre', hint: 'Background, title, light-mode panels' },
-  { key: 'lightingOmbre', label: 'Lighting ombre', hint: 'Two-tone light in and around panels' },
+  { key: 'appOmbre', label: 'App ombre', hint: 'Background, title, panel blend' },
+  { key: 'lightingOmbre', label: 'Lighting ombre', hint: 'Panel light and light-mode panel color' },
 ]
 
 function HueRing({ hue, onChange }: { hue: number; onChange: (hue: number) => void }) {

@@ -112,7 +112,7 @@ function applyCustomization(c: Customization, theme: ThemeMode) {
     ),
   )
 
-  if (theme === 'light') {
+  if (theme === 'light' && c.lightingOmbre) {
     applyLightPanels(root, c, accentHue)
   } else {
     PANEL_VARS.forEach((name) => root.style.removeProperty(name))
