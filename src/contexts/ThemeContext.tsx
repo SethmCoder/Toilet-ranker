@@ -41,6 +41,60 @@ function loadCustomization(): Customization {
 
 const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
 
+const DARK_TEXT = '#0a0f18'
+const LIGHT_TEXT = '#ffffff'
+const PANEL_VARS = ['--panel', '--panel-solid', '--fg', '--muted', '--panel-border', '--input-bg', '--input-border']
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  s /= 100
+  l /= 100
+  const k = (n: number) => (n + h / 30) % 12
+  const a = s * Math.min(l, 1 - l)
+  const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))
+  return [f(0), f(8), f(4)]
+}
+
+function luminance([r, g, b]: [number, number, number]) {
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+}
+
+function contrast(a: number, b: number) {
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+}
+
+/** Picks dark or white text, whichever stays most readable across every given background. */
+function readableText(backgrounds: [number, number, number][]) {
+  const lums = backgrounds.map(luminance)
+  const darkLum = luminance([10 / 255, 15 / 255, 24 / 255])
+  const worstDark = Math.min(...lums.map((l) => contrast(l, darkLum)))
+  const worstLight = Math.min(...lums.map((l) => contrast(l, 1)))
+  return worstDark >= worstLight ? DARK_TEXT : LIGHT_TEXT
+}
+
+function applyLightPanels(root: HTMLElement, c: Customization, accentHue: number) {
+  const panelLightness = clamp(c.brightness + 22, 35, 92)
+  const startRgb = hslToRgb(c.hue, 85, panelLightness)
+  const endRgb = hslToRgb(accentHue, 85, panelLightness)
+  const start = `hsl(${c.hue} 85% ${panelLightness}%)`
+  const end = `hsl(${accentHue} 85% ${panelLightness}%)`
+  const text = readableText(c.appOmbre ? [startRgb, endRgb] : [startRgb])
+  const darkText = text === DARK_TEXT
+
+  root.style.setProperty(
+    '--panel',
+    c.appOmbre
+      ? `linear-gradient(150deg, color-mix(in srgb, ${start} 92%, transparent), color-mix(in srgb, ${end} 92%, transparent))`
+      : `color-mix(in srgb, ${start} 92%, transparent)`,
+  )
+  root.style.setProperty('--panel-solid', start)
+  root.style.setProperty('--fg', text)
+  root.style.setProperty('--muted', darkText ? 'rgba(10, 15, 24, 0.7)' : 'rgba(255, 255, 255, 0.8)')
+  root.style.setProperty('--panel-border', darkText ? 'rgba(10, 15, 24, 0.14)' : 'rgba(255, 255, 255, 0.24)')
+  root.style.setProperty('--input-bg', darkText ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.2)')
+  root.style.setProperty('--input-border', darkText ? 'rgba(10, 15, 24, 0.2)' : 'rgba(255, 255, 255, 0.3)')
+}
+
 function applyCustomization(c: Customization, theme: ThemeMode) {
   const root = document.documentElement
   const lightness = clamp(c.brightness + (theme === 'dark' ? 6 : 0), 15, 85)
@@ -49,7 +103,21 @@ function applyCustomization(c: Customization, theme: ThemeMode) {
 
   root.style.setProperty('--primary', `hsl(${c.hue} 100% ${lightness}%)`)
   root.style.setProperty('--accent', `hsl(${accentHue} 100% ${accentLightness}%)`)
-  root.style.setProperty('--primary-fg', lightness > 68 ? '#0a0f18' : '#ffffff')
+  root.style.setProperty(
+    '--primary-fg',
+    readableText(
+      c.buttonOmbre
+        ? [hslToRgb(c.hue, 100, lightness), hslToRgb(accentHue, 100, accentLightness)]
+        : [hslToRgb(c.hue, 100, lightness)],
+    ),
+  )
+
+  if (theme === 'light') {
+    applyLightPanels(root, c, accentHue)
+  } else {
+    PANEL_VARS.forEach((name) => root.style.removeProperty(name))
+  }
+
   root.dataset.buttonOmbre = c.buttonOmbre ? 'on' : 'off'
   root.dataset.appOmbre = c.appOmbre ? 'on' : 'off'
   root.dataset.lightingOmbre = c.lightingOmbre ? 'on' : 'off'

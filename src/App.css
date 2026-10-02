@@ -71,8 +71,15 @@
   --brand-fill: linear-gradient(90deg, var(--fg), var(--accent));
 }
 
+:root {
+  --inner-light: inset 10px 10px 28px -14px color-mix(in srgb, var(--primary) 70%, transparent),
+    inset -10px -10px 28px -14px color-mix(in srgb, var(--accent) 70%, transparent),
+    inset 0 1px 0 0 color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
 :root[data-lighting-ombre='off'] {
   --glow-2: var(--primary);
+  --inner-light: inset 0 0 0 0 transparent;
 }
 
 :root[data-button-ombre='off'] {
@@ -140,7 +147,7 @@ h3,
 .session-timeout-card {
   backdrop-filter: blur(18px) saturate(1.2);
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
 }
 
 .top-bar {
@@ -155,7 +162,7 @@ h3,
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
   background: var(--panel);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
   z-index: 1000;
 }
 
@@ -391,7 +398,7 @@ h3,
   transition: width 0.28s ease, margin 0.28s ease, opacity 0.2s ease, padding 0.28s ease;
   z-index: 500;
   border-radius: var(--radius);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
 }
 
 .sidebar.closed {
@@ -553,7 +560,7 @@ h3,
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--panel-border);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
 }
 
 .map-container {
@@ -588,7 +595,7 @@ h3,
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
 }
 
 .legend-sep {
@@ -676,7 +683,7 @@ h3,
   padding: 0.75rem 0.9rem 0.65rem;
   gap: 0.55rem;
   border-radius: var(--radius);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
 }
 
 .list-header {
@@ -881,7 +888,7 @@ h3,
   color: var(--fg);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
   padding: 1.4rem 1.35rem 1.35rem;
   text-align: center;
   display: flex;
@@ -931,7 +938,7 @@ h3,
   color: var(--fg);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
   padding: 1.15rem 1.2rem 1.25rem;
 }
 
@@ -994,7 +1001,7 @@ h3,
   border-radius: var(--radius-sm);
   background: var(--panel-solid);
   color: var(--fg);
-  box-shadow: var(--shadow), var(--glow), var(--underglow);
+  box-shadow: var(--shadow), var(--glow), var(--underglow), var(--inner-light);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
