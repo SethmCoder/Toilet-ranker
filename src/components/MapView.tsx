@@ -54,6 +54,7 @@ type MapViewProps = {
   onMapClick: (lat: number, lng: number) => void
   draftLat: number | null
   draftLng: number | null
+  draftFocusId: number
   userLocation: UserLocation | null
   locateRequestId: number
   dashboardOpen: boolean
@@ -86,6 +87,24 @@ function FitSelected({ bathroom }: { bathroom: Bathroom | null }) {
       })
     }
   }, [bathroom, map])
+  return null
+}
+
+function FlyToDraft({
+  lat,
+  lng,
+  focusId,
+}: {
+  lat: number | null
+  lng: number | null
+  focusId: number
+}) {
+  const map = useMap()
+  useEffect(() => {
+    if (focusId === 0 || lat == null || lng == null) return
+    map.flyTo([lat, lng], Math.max(map.getZoom(), 17), { duration: 0.8 })
+    // Only re-fly when a new place is picked, not when the pin is moved by clicking.
+  }, [focusId, map])
   return null
 }
 
@@ -223,6 +242,7 @@ export function MapView({
   onMapClick,
   draftLat,
   draftLng,
+  draftFocusId,
   userLocation,
   locateRequestId,
   dashboardOpen,
@@ -295,6 +315,7 @@ export function MapView({
           <HomeOnUser userLocation={userLocation} locateRequestId={locateRequestId} />
           <MapClickHandler onMapClick={onMapClick} enabled={dashboardOpen} />
           <FitSelected bathroom={selected} />
+          <FlyToDraft lat={draftLat} lng={draftLng} focusId={draftFocusId} />
 
           {userLocation && (
             <>

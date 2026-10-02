@@ -65,6 +65,7 @@ function AppShell({ remainingMs }: { remainingMs: number | null }) {
   const [form, setForm] = useState<RatingForm>(defaultForm)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [locateRequestId, setLocateRequestId] = useState(0)
+  const [draftFocusId, setDraftFocusId] = useState(0)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [filters, setFilters] = useState<FilterState>({
     minRating: 1,
@@ -120,6 +121,8 @@ function AppShell({ remainingMs }: { remainingMs: number | null }) {
           onChange={setForm}
           onOpenAuth={() => setAuthOpen(true)}
           onSubmit={async (ratingForm) => submitRating(ratingForm, user?.id ?? null)}
+          searchNear={userLocation ? { lat: userLocation.lat, lng: userLocation.lng } : null}
+          onPlacePicked={() => setDraftFocusId((n) => n + 1)}
         />
 
         <div className="content-area">
@@ -146,6 +149,7 @@ function AppShell({ remainingMs }: { remainingMs: number | null }) {
             onSelect={setSelectedId}
             draftLat={form.latitude}
             draftLng={form.longitude}
+            draftFocusId={draftFocusId}
             userLocation={userLocation}
             locateRequestId={locateRequestId}
             dashboardOpen={sidebarOpen}

@@ -491,6 +491,7 @@ h3,
 
 .notes-field textarea,
 .location-field input,
+.place-search input,
 .auth-form input,
 .filters input,
 .search-bar input {
@@ -503,6 +504,7 @@ h3,
 
 .notes-field textarea:focus,
 .location-field input:focus,
+.place-search input:focus,
 .auth-form input:focus,
 .filters input:focus {
   outline: none;
@@ -517,6 +519,71 @@ h3,
 
 .coords {
   margin-top: 0.25rem;
+}
+
+.place-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.place-search-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.place-search-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.place-results {
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
+}
+
+.place-result {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  border: none;
+  border-radius: calc(var(--radius-sm) - 6px);
+  background: transparent;
+  cursor: pointer;
+}
+
+.place-result:hover,
+.place-result:focus-visible {
+  background: var(--hover);
+  outline: none;
+}
+
+.place-result .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.place-empty {
+  padding: 0.45rem 0.6rem;
+}
+
+.place-credit {
+  font-size: 0.68rem;
+  text-align: right;
 }
 
 .submit-btn {

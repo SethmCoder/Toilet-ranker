@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent } from 'react'
 import type { RatingForm } from '../types'
 import { useAuth } from '../contexts/AuthContext'
 import { isSupabaseConfigured } from '../lib/supabase'
+import { PlaceSearch } from './PlaceSearch'
 
 type SidebarProps = {
   open: boolean
@@ -9,6 +10,8 @@ type SidebarProps = {
   onChange: (next: RatingForm) => void
   onSubmit: (form: RatingForm) => Promise<string | null>
   onOpenAuth: () => void
+  searchNear: { lat: number; lng: number } | null
+  onPlacePicked: () => void
 }
 
 function Slider({
@@ -38,7 +41,7 @@ function Slider({
   )
 }
 
-export function Sidebar({ open, form, onChange, onSubmit }: SidebarProps) {
+export function Sidebar({ open, form, onChange, onSubmit, searchNear, onPlacePicked }: SidebarProps) {
   const { user } = useAuth()
   const [status, setStatus] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -127,10 +130,23 @@ export function Sidebar({ open, form, onChange, onSubmit }: SidebarProps) {
           />
           <span className="muted coords">
             {form.latitude != null && form.longitude != null
-              ? `${form.latitude.toFixed(5)}, ${form.longitude.toFixed(5)} — click map to update`
-              : 'Click the map to drop a pin for this bathroom'}
+              ? `${form.latitude.toFixed(5)}, ${form.longitude.toFixed(5)} — click map or search to update`
+              : 'Search below or click the map to drop a pin for this bathroom'}
           </span>
         </label>
+
+        <PlaceSearch
+          near={searchNear}
+          onPick={(place) => {
+            onChange({
+              ...form,
+              latitude: place.lat,
+              longitude: place.lng,
+              locationName: form.locationName.trim() ? form.locationName : place.name,
+            })
+            onPlacePicked()
+          }}
+        />
 
         {error && <p className="form-error">{error}</p>}
         {status && <p className="form-success">{status}</p>}
