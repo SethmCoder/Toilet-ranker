@@ -123,14 +123,12 @@ function AppShell({ remainingMs }: { remainingMs: number | null }) {
         />
 
         <div className="content-area">
-          <div
-            className={`banner bubble-chip supabase-banner ${isSupabaseConfigured ? 'ok' : 'warn'}`}
-            role="status"
-          >
-            {isSupabaseConfigured
-              ? 'Supabase: Connected — ratings save to the cloud.'
-              : 'Supabase: Not connected — add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel env vars (or local .env), then redeploy / restart.'}
-          </div>
+          {!isSupabaseConfigured && (
+            <div className="banner bubble-chip supabase-banner warn" role="status">
+              Supabase: Not connected — add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in
+              Vercel env vars (or local .env), then redeploy / restart.
+            </div>
+          )}
           {loadError && <div className="banner error bubble-chip">{loadError}</div>}
           {deleteError && <div className="banner error bubble-chip">{deleteError}</div>}
           {gpsError && (
