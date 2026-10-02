@@ -95,7 +95,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(async (email: string, password: string) => {
     if (!isSupabaseConfigured) return 'Supabase is not configured. Add your keys to .env.'
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: window.location.origin },
+    })
     return error?.message ?? null
   }, [])
 
